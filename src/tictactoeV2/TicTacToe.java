@@ -21,6 +21,7 @@ public class TicTacToe extends JFrame {
 	private ButtonWithCoordinates[][] board = new ButtonWithCoordinates[rows][columns];
 	private Character lastSymbol = 'O';
 	private static TicTacToe frame;
+
 	/**
 	 * Launch the application.
 	 */
@@ -52,42 +53,19 @@ public class TicTacToe extends JFrame {
 			for (int j = 0; j < columns; ++j) {
 				ButtonWithCoordinates newButton = new ButtonWithCoordinates(i,
 						j, "");
+
 				board[i][j] = newButton;
+
 				newButton.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						System.out.format("You clicked button %d, %d \n",
-								newButton.getXCoordinate(), newButton.getYCoordinate());
-						// System.out.format("You clicked button %d, %d \n",
-						// newButton.getX(), newButton.getY());
-						
-						if(newButton.getText() == ""){
-							if (lastSymbol == 'O') {
-								newButton.setText("X");
-								lastSymbol = 'X';
-							} else {
-								newButton.setText("O");
-								lastSymbol = 'O';
-							}							
-						}
-						
-						if(check(lastSymbol, newButton.getXCoordinate(), newButton.getYCoordinate())){
-							String playAgain;
-							if(lastSymbol == 'X'){
-//								frame.setVisible(false);
-								playAgain = JOptionPane.showInputDialog("First player won!\n Would you like to play again? Yes/No");
-							}
-							else{
-//								frame.setVisible(false);								
-								playAgain = JOptionPane.showInputDialog("Second player won!\n Would you like to play again? Yes/No");
-							}
-							
-							if(playAgain.toLowerCase().equals("yes")){
-								initBoard();
-								frame.setVisible(true);
-							}
-						}									
+								newButton.getXCoordinate(),
+								newButton.getYCoordinate());
+
+						pressButton(newButton);
+
 					}
 				});
 				contentPane.add(newButton);
@@ -96,66 +74,102 @@ public class TicTacToe extends JFrame {
 
 	}
 
-	
-private void initBoard(){
-	
-	for (int i = 0; i < rows; i++)
-		for (int j = 0; j < columns; j++) 
-			board[i][j].setText("");
-	lastSymbol = 'O';
-	
-	
-	
-}
-public Boolean check(Character lastSymbol, int x, int y){
-		
+	private void pressButton(ButtonWithCoordinates newButton) {
+
+		if (newButton.getText() == "") {
+			if (lastSymbol == 'O') {
+				newButton.setText("X");
+				lastSymbol = 'X';
+			} else {
+				newButton.setText("O");
+				lastSymbol = 'O';
+			}
+			if (check(lastSymbol, newButton.getXCoordinate(),
+					newButton.getYCoordinate())) {
+				String playAgain;
+
+				if (lastSymbol == 'X') {
+					 frame.setVisible(false);
+					playAgain = JOptionPane
+							.showInputDialog("First player won!\n Would you like to play again? Yes/No");
+				} else {
+					 frame.setVisible(false);
+					playAgain = JOptionPane
+							.showInputDialog("Second player won!\n Would you like to play again? Yes/No");
+				}
+
+				if (playAgain.toLowerCase().equals("yes")) {
+					initBoard();
+					frame.setVisible(true);
+				} else
+					System.exit(0);
+			}
+		}
+	}
+
+	private void initBoard() {
+
+		for (int i = 0; i < rows; i++)
+			for (int j = 0; j < columns; j++)
+				board[i][j].setText("");
+		lastSymbol = 'O';
+
+	}
+
+	public Boolean check(Character lastSymbol, int x, int y) {
+
 		Boolean ok;
-		
+
 		// check row
 		ok = true;
-		for (int i = 0; i < rows; i++) {
-			if(board[x][i].getText().equals(Character.toString(lastSymbol)))
+		for (int i = 0; i < columns; i++) {
+			if (board[x][i].getText().equals(Character.toString(lastSymbol)))
 				continue;
 			else
 				ok = false;
 		}
-		if(ok) return true;
-		
+		if (ok)
+			return true;
+
 		// check column
 		ok = true;
-		for (int i = 0; i < columns; i++) {
-			if(board[i][y].getText().equals(Character.toString(lastSymbol)))
+		for (int i = 0; i < rows; i++) {
+			if (board[i][y].getText().equals(Character.toString(lastSymbol)))
 				continue;
 			else
 				ok = false;
 		}
-		if(ok) return true;
-		
-		if(x == y){ // diagonala principala x = y
+		if (ok)
+			return true;
+
+		if (x == y) { // diagonala principala x = y
 			ok = true;
 			for (int i = 0; i < rows; i++) {
-				if(board[i][i].getText().equals(Character.toString(lastSymbol)))
+				if (board[i][i].getText()
+						.equals(Character.toString(lastSymbol)))
 					continue;
 				else
 					ok = false;
 			}
-			if(ok) return true;
+			if (ok)
+				return true;
 		}
-		
-		if(x+y == rows - 1){ // x+y = n+1-2, diagonala secundara
+
+		if (x + y == rows - 1) { // x+y = n+1-2, diagonala secundara
 			ok = true;
 			for (int i = 0; i < rows; i++) {
-				if(board[i][2 - i].getText().equals(Character.toString(lastSymbol)))
+				if (board[i][2 - i].getText().equals(
+						Character.toString(lastSymbol)))
 					continue;
 				else
 					ok = false;
 			}
-			if(ok) return true;
-			
+			if (ok)
+				return true;
+
 		}
-		
+
 		return false;
 	}
-	
 
 }
