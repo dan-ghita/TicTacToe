@@ -2,6 +2,7 @@ package tictactoeV2;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +18,7 @@ public class TicTacToe extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private final int columns = 3, rows = 3;
+	private static int columns, rows;
 	private ButtonWithCoordinates[][] board = new ButtonWithCoordinates[rows][columns];
 	private Character lastSymbol = 'O';
 	private static TicTacToe frame;
@@ -26,6 +27,15 @@ public class TicTacToe extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		try {
+			rows = columns = Integer.parseInt(JOptionPane.showInputDialog(null, "Set number of rows|columns:"));
+		} catch (NumberFormatException e1) {
+			JOptionPane.showMessageDialog(null, "Please input a number greater than 0!");
+			System.exit(-1);
+		}
+		
+				
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -84,7 +94,7 @@ public class TicTacToe extends JFrame {
 				newButton.setText("O");
 				lastSymbol = 'O';
 			}
-			if (check(lastSymbol, newButton.getXCoordinate(),
+			if (checkForWin(lastSymbol, newButton.getXCoordinate(),
 					newButton.getYCoordinate())) {
 				String playAgain;
 
@@ -116,11 +126,11 @@ public class TicTacToe extends JFrame {
 
 	}
 
-	public Boolean check(Character lastSymbol, int x, int y) {
+	public Boolean checkForWin(Character lastSymbol, int x, int y) {
 
 		Boolean ok;
 
-		// check row
+		// checkForWin row
 		ok = true;
 		for (int i = 0; i < columns; i++) {
 			if (board[x][i].getText().equals(Character.toString(lastSymbol)))
@@ -131,7 +141,7 @@ public class TicTacToe extends JFrame {
 		if (ok)
 			return true;
 
-		// check column
+		// checkForWin column
 		ok = true;
 		for (int i = 0; i < rows; i++) {
 			if (board[i][y].getText().equals(Character.toString(lastSymbol)))
@@ -142,7 +152,8 @@ public class TicTacToe extends JFrame {
 		if (ok)
 			return true;
 
-		if (x == y) { // diagonala principala x = y
+		// diagonala principala x = y
+		if (x == y) { 
 			ok = true;
 			for (int i = 0; i < rows; i++) {
 				if (board[i][i].getText()
@@ -155,10 +166,11 @@ public class TicTacToe extends JFrame {
 				return true;
 		}
 
-		if (x + y == rows - 1) { // x+y = n+1-2, diagonala secundara
+		// x+y = n+1-2, diagonala secundara
+		if (x + y == rows - 1) { 
 			ok = true;
 			for (int i = 0; i < rows; i++) {
-				if (board[i][2 - i].getText().equals(
+				if (board[i][columns - i - 1].getText().equals(
 						Character.toString(lastSymbol)))
 					continue;
 				else
